@@ -57,7 +57,7 @@ Before you recover the bootloader, please double check the boot mode jumpers(Swi
    CCCCCCCCCCCCCCCCCCCCC
    ```
 
-3. Please transfer the recovery binary by xmode and you will see recovery menu automaticlly;
+3. Please transfer the recovery binary **`jh7110-recovery-20221205.bin`** by xmode and you will see recovery menu automaticlly;
    ```   
    JH7110 secondboot version: 221205-74596a9
    CPU freq: 1250MHz
