@@ -31,7 +31,7 @@ struct __attribute__((__packed__)) ubootsplhdr {
 
 static struct ubootsplhdr ubsplhdr;
 
-static char ubootspl[131072-0x400];
+static char ubootspl[131072-sizeof(struct ubootsplhdr)+1];
 static char outpath[PATH_MAX];
 
 #define DEFVERSID 0x01010101
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 
 	sz = (size_t)read(fd, ubootspl, sizeof(ubootspl));
 	if (sz == NOSIZE) xerror(errno, argv[1]);
-	if (sz >= (sizeof(ubootspl) - sizeof(struct ubootsplhdr)))
+	if (sz >= (sizeof(ubootspl)))
 		xerror(0, "File too large! Please rebuild your SPL with -Os. Maximum allowed size is 130048 bytes.");
 	v = htole32((uint32_t)sz);
 	ubsplhdr.fsiz = v;
