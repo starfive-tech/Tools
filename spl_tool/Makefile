@@ -1,15 +1,15 @@
-override CFLAGS=-Wall -O2
+override CFLAGS=-Wall -Wno-unused-result -Wno-format-truncation -O2
 
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 
-all: jh7110_uboot_spl
+all: spl_tool
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-jh7110_uboot_spl: $(OBJS)
+spl_tool: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $@
 
 clean:
-	rm -f *.o jh7110_uboot_spl
+	rm -f *.o spl_tool

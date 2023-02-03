@@ -7,4 +7,4 @@ _*
 *.patch
 *.out
 tags
-jh7110_uboot_spl
+spl_tool
