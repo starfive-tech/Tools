@@ -14,6 +14,11 @@ WHY
 Cause I want it to run on RISC-V when building U-Boot there. I don't want
 to resort to qemu-x86_64 to run a tool which does something very simple.
 
+OFFICIAL DOCUMENTATION
+
+UPD: Please see https://doc-en.rvspace.org/VisionFive2/Developer_Guide/JH7110_Boot_UG.pdf for complete guide on
+how to make bootable images for various boot sources (QSPI, eMMC, SD). It also covers this source aswell now.
+
 LICENSE
 
 Public domain.
