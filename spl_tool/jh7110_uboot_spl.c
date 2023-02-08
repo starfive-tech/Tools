@@ -36,9 +36,11 @@ struct hdr_conf_t {
 	uint32_t vers;
 	uint32_t bofs;
 	bool creat_hdr_flag;
+	bool fixed_img_hdr_flag;
 };
 
 static struct ubootsplhdr ubsplhdr;
+static struct ubootsplhdr imghdr;
 static struct hdr_conf_t g_hdr_conf;
 
 static char ubootspl[131072-sizeof(struct ubootsplhdr)+1];
@@ -46,6 +48,7 @@ static char outpath[PATH_MAX];
 
 #define DEFVERSID 0x01010101
 #define DEFBACKUP 0x200000U
+#define CRCFAILED 0x5A5A5A5A
 
 static void xerror(int errnoval, const char *s)
 {
@@ -60,6 +63,7 @@ static void usage(void)
 		"\n            StarFive spl tool\n\n"
 		"usage:\n"
 		"-c, --creat-splhdr	creat spl hdr\n"
+		"-i, --fix-imghdr	fixed img hdr for emmc boot.\n"
 		"-a, --spl-bak-addr	set backup SPL addr(default: 0x200000)\n"
 		"-v, --version		set version (default: 0x01010101)\n"
 		"-f, --file		input file name(spl/img)\n"
@@ -74,6 +78,7 @@ static int parse_args(int argc, char **argv)
 
 	enum {
 		OPTION_CREAD_HDR = 1,
+		OPTION_FIXED_HDR,
 		OPTION_SBL_BAK_OFFSET,
 		OPTION_VERSION,
 		OPTION_FILENAME,
@@ -83,6 +88,7 @@ static int parse_args(int argc, char **argv)
 	static struct option long_options[] =
 	{
 		{"creat-splhdr" , no_argument, NULL, OPTION_CREAD_HDR},
+		{"fix-imghdr" , no_argument, NULL, OPTION_FIXED_HDR},
 		{"spl-bak-addr" , required_argument, NULL, OPTION_SBL_BAK_OFFSET},
 		{"version", required_argument, NULL, OPTION_VERSION},
 		{"file", required_argument, NULL, OPTION_FILENAME},
@@ -110,6 +116,13 @@ static int parse_args(int argc, char **argv)
 		case 'c':
 		case OPTION_CREAD_HDR:
 			g_hdr_conf.creat_hdr_flag = true;
+			g_hdr_conf.fixed_img_hdr_flag = false;
+			break;
+
+		case 'i':
+		case OPTION_FIXED_HDR:
+			g_hdr_conf.fixed_img_hdr_flag = true;
+			g_hdr_conf.creat_hdr_flag = false;
 			break;
 
 		case 'a':
@@ -190,8 +203,41 @@ int spl_creat_hdr(struct hdr_conf_t *conf)
 
 	return 0;
 }
+
+int img_fixed_hdr(struct hdr_conf_t *conf)
+{
+	int fd;
+	size_t sz;
+
+	if (!conf->fixed_img_hdr_flag)
+		return 0;
+
+	fd = open(conf->name, O_RDWR);
+	if (fd == -1) xerror(errno, conf->name);
+
+	sz = (size_t)read(fd, &imghdr, sizeof(imghdr));
+	if (sz == NOSIZE) xerror(errno, conf->name);
+
+	/* When starting with emmc, bootrom will read 0x0 instead of partition 0. (Known issues).
+	Read GPT PMBR+Header, then write the backup address at 0x4, and write the wrong CRC
+	check value at 0x290, so that bootrom CRC check fails and jump to the backup address
+	to load the real spl. */
+
+	imghdr.bofs = conf->bofs ? conf->bofs : htole32(DEFBACKUP);
+	imghdr.crcs = htole32(CRCFAILED);
+
+	lseek(fd, 0x0, SEEK_SET);
+	write(fd, &imghdr, sizeof(imghdr));
+	close(fd);
+
+	printf("IMG  %s fixed hdr successfully.\n", conf->name);
+
+	return 0;
+}
+
 int main(int argc, char **argv)
 {
 	parse_args(argc, argv);
 	spl_creat_hdr(&g_hdr_conf);
+	img_fixed_hdr(&g_hdr_conf);
 }
