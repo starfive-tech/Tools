@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0+
 override CFLAGS=-Wall -Wno-unused-result -Wno-format-truncation -O2
 
 SRCS = $(wildcard *.c)
