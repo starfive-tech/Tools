@@ -4,20 +4,7 @@
 
 ### How to create `u-boot-spl.bin.normal.out`
 
-Input:
-```
-{U-BOOT_PATH}/spl/u-boot-spl.bin
-```
-
-Output:
-```
-u-boot-spl.bin.normal.out
-```
-
-For example:
-```
-./create_sbl {U-BOOT_PATH}/spl/u-boot-spl.bin 0x01010101
-```
+Please refer to the [README.md](./spl_tool/README.md) under spl_tool directory
 
 
 ## uboot_its
