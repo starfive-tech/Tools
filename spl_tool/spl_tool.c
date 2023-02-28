@@ -44,7 +44,7 @@ static struct ubootsplhdr ubsplhdr;
 static struct ubootsplhdr imghdr;
 static struct hdr_conf_t g_hdr_conf;
 
-static char ubootspl[131072-sizeof(struct ubootsplhdr)+1];
+static char ubootspl[181072-sizeof(struct ubootsplhdr)+1];
 static char outpath[PATH_MAX];
 
 #define DEFVERSID 0x01010101
@@ -181,7 +181,7 @@ int spl_creat_hdr(struct hdr_conf_t *conf)
 	sz = (size_t)read(fd, ubootspl, sizeof(ubootspl));
 	if (sz == NOSIZE) xerror(errno, conf->name);
 	if (sz >= (sizeof(ubootspl)))
-		xerror(0, "File too large! Please rebuild your SPL with -Os. Maximum allowed size is 130048 bytes.");
+		xerror(0, "File too large! Please rebuild your SPL with -Os. Maximum allowed size is 180048 bytes.");
 	v = htole32((uint32_t)sz);
 	ubsplhdr.fsiz = v;
 
