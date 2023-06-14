@@ -32,7 +32,7 @@ For example:
 
 ### How to recover bootloader
 
-The SPL and U-Boot are stored inside the SPI flash on board. There may be situations where you accidentally emptied the flash or if the flash is damaged on your board. In these situations, it's better to recovery the bootloader. 
+The SPL and U-Boot are stored inside the SPI flash on board. There may be situations where you accidentally emptied the flash or if the flash is damaged on your board. In these situations, it's better to recover the bootloader. 
 
 Before you recover the bootloader, please double check the boot mode jumpers(Switch_2) on your board has already been switched to UART mode(GPIO_1,GPIO_0: 1,1);
 
