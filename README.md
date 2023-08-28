@@ -64,7 +64,7 @@ Before you recover the bootloader, please double check the boot mode jumpers(Swi
    NOTE: current xmodem receive buff = 0x40000000, 'load 0x********' to change.
    select the function to test:
    ```
-4. Type **`0`** and press Enter to udpate SPL binary **`u-boot-spl.bin.normal.out`**;
+4. Type **`0`** and press Enter to update SPL binary **`u-boot-spl.bin.normal.out`**;
 
 5. Type **`2`** and press Enter to update U-Boot binary **`visionfive2_fw_payload.img`**;
 
